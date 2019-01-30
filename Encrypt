@@ -1,3 +1,9 @@
+Ovaj program traži od vas da upišete neki ključ i poruku koju zelite šifrirati
+Nakon što upišete ključ i poruku kliknete 'OK' i onda 'Encrypt'
+imate o opciju da spremite kluč i poruku u neki .txt file
+
+
+
 #PYTHON AES
 
 import pickle
