@@ -1,0 +1,139 @@
+#PYTHON AES
+
+import pickle
+from Crypto.Cipher import AES
+from Crypto import Random
+from tkinter import*
+from tkinter import messagebox
+import sys
+from tkinter import filedialog
+import base64
+import os
+
+####################### TKINTER #############################################
+
+window = Tk()
+window.title('AES')
+window.geometry('250x200')
+
+
+lblkey = Label(window, text=('Key:'))
+lblkey.place(x=40,y=30)
+enterkey = Entry(window, width=16)
+enterkey.place(x=95,y=30)
+
+lblmsg = Label(window, text=('Message:'))
+lblmsg.place(x=40,y=60)
+
+############################ START ################################
+
+def text():
+    global entermsg
+   
+    btntxt.place(x=95,y=60,width=0)
+    entermsg = Entry(window, width=16)
+    entermsg.place(x=95,y=60)
+
+    importfile.place(x=190,y=60,height=0,width=0)
+
+############################# GATHER DATA ################################
+   
+def ok():
+    global key2,msg,msg2,cipher,key
+   
+    key = enterkey.get()
+   
+    key2 = pad(key)
+
+
+    if key2 == '{' *16 or entermsg.get()=='':
+          
+        messagebox.showwarning("Warning","Please enter a key and message")
+        sys.exit()
+
+    cipher = AES.new(key2)
+
+    OK.place(x=115,y=95,height=0,width=0)
+    encrypt.place(x=115,y=95,height=20)
+
+    msg2=str(entermsg.get())
+
+    msg =base64.b64encode(cipher.encrypt(pad(msg2)))
+
+################### SHOWS BUTTONS ##########################################
+
+def start():
+
+    encrypt.place(x=115,y=95,height=0,width=0)
+
+    saveenc = Button(window,text='Save encrypted messages',command=savefile)
+    saveenc.place(x=40,y=120)
+
+    print('Key: {}'.format(key2))
+    print('Encrypted Message: {}'.format(msg.decode('utf-8')))
+   
+##################################PAD AND UNPAD ##############################
+
+def pad(s):
+   
+    return s + '{' * (AES.block_size - len(s) % AES.block_size)
+
+
+def unpad(s):
+   
+    return s[:-ord(s[len(s)-1:])]
+   
+########################################### SAVE MESSAGES ############################
+
+def savefile():
+    global msg
+    encfile = Tk()
+    encfile.filename = filedialog.askopenfilename(initialdir = '/',title = 'Select file')
+    print(encfile.filename)                                                
+
+    encapp = open(encfile.filename,'a')
+    encapp.write('\n')
+    encapp.write('Key: {} \n'.format(key2))
+    encapp.write('Encrypted Message: {}'.format(msg.decode('utf-8')))
+    encapp.write('\n')
+   
+################################## IMPORT FILE #################################
+
+def fimport():
+    global  key2,msg, msg2, cipher
+
+    key=enterkey.get()
+   
+    btntxt.place(x=130,y=60,height=0,width=0)
+   
+    key2 = pad(key)
+       
+    cipher = AES.new(key2)
+    
+
+    openfile = Tk()
+    openfile.filename = filedialog.askopenfilename()
+
+    read = open(openfile.filename, 'r')
+    r = read.read()
+   
+    msg2 = str(r)
+
+    msg =base64.b64encode(cipher.encrypt(pad(msg2)))
+       
+    importfile.place(x=190,y=60,height=0,width=0)
+    encrypt.place(x=115,y=95,height=20)
+    OK.place(x=115,y=95,height=0,width=0)
+
+############################# BUTTONS #########################################
+
+encrypt = Button(window, text='Encrypt',command=start)
+
+importfile = Button(window, text = 'Import',command = fimport)
+importfile.place(x=190,y=60,height=20)
+
+btntxt = Button(window, text= 'Text ',command=text)
+btntxt.place(x=130,y=60,height=20)
+
+OK = Button(window, text='OK',command=ok)
+OK.place(x=115,y=95,height=20)
