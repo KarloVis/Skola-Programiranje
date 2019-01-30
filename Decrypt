@@ -1,0 +1,61 @@
+from Crypto.Cipher import AES
+import base64
+import os
+from tkinter import *
+import sys
+from tkinter import message
+box
+   
+def DecodeAES(c,e):
+    #print(e)
+    return c.decrypt(base64.b64decode(e)).rstrip(b'{')
+    #return base64.b64decode(c.decrypt(e)).rstrip('\0')
+
+
+def decrypt():
+
+    if enterkey.get() == '' or entermsg.get() == '':
+        messagebox.showwarning("Warning","Enter a key and a message")
+        sys.exit()
+
+       
+
+    #print(str(enc_msg))
+    key1 = enterkey.get()
+    key = str(key1).encode('utf-8')
+
+   
+    a = entermsg.get()
+   
+
+    cipher = AES.new(key)
+    decoded = DecodeAES(cipher,a)
+    print('Decrypted Message:')
+    print(decoded.decode('utf-8'))
+    #print(decoded)
+   
+def pad(s):
+   
+
+   
+    return s + "{" * (AES.block_size - len(s) % AES.block_size)
+
+main = Tk()
+main.title('DECRYPT')
+main.geometry('300x220')
+
+enterkey = Entry(main, width=20)
+enterkey.place(x=90,y=50)
+
+entermsg = Entry(main, width=20)
+entermsg.place(x=90,y=10)
+
+
+btn_dec = Button(main,text='OK',command=decrypt)
+btn_dec.place(x=90,y=90)
+
+keylbl= Label(main,text='Key:')
+keylbl.place(x=60,y=50)
+
+msglbl = Label(main,text='Encrypted \nMessage')
+msglbl.place(x=10,y=10)
